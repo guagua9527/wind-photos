@@ -32,7 +32,6 @@ const isHover = ref(false)
     align-items: center;
     transition: 2s;
     border-radius: 30px;
-    /* background-color: #fff; */
     border-width: 2px;
     border-color: #fff;
     border-style: solid;
