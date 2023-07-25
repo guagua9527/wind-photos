@@ -90,7 +90,6 @@ const isHover = ref(false)
 .image-hover {
     height: 300px;
     border-radius: 30px;
-    /* width: 280px; */
 }
 
 .description {
@@ -98,7 +97,6 @@ const isHover = ref(false)
     text-indent: 2em;
     font-size: 16px;
     margin: 0;
-    /* color: #fff; */
     margin: 20px;
 }
 
