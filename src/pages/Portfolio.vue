@@ -11,7 +11,7 @@
         </div>
         <div class="content">
             <div v-if="selected == 'all'" class="list">
-                <PortfolioCard v-for="p in allPortfolioList" v-bind="p" />
+                <PortfolioCard v-for="p in allPortfolioList" v-bind="p" @click="cilickPortfolio(p)" />
             </div>
 
             <div v-else class="list">
@@ -29,6 +29,7 @@ import PortfolioTypeCard from '@/components/PortfolioTypeCard.vue';
 import PortfolioCard from '@/components/PortfolioCard.vue';
 import { useTitle } from '@vueuse/core'
 import type { Portfolio, PortfolioTypeItem } from '../types/portfolio'
+import router from '@/router';
 
 type SelectType = "all" | "type";
 
@@ -104,15 +105,20 @@ const url = computed(() => {
 })
 
 watch(url, () => {
-    apiClient.get(url.value).then((res: any) => {
-        console.log(res.data)
-        portfolioList.value = res.data.data as Portfolio[]
-    })
+    // apiClient.get(url.value).then((res: any) => {
+    //     console.log(res.data)
+    //     portfolioList.value = res.data.data as Portfolio[]
+    // })
 })
 
 onMounted(() => {
     store.title = '作品集'
 })
+
+const cilickPortfolio = (p: Portfolio) => {
+    console.log(p)
+    router.push(`/photos`)
+}
 
 </script>
 

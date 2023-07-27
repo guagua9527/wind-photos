@@ -1,19 +1,32 @@
 <script setup lang="ts">
+import { ref, Ref } from 'vue';
 import { useMainStore } from './store/index'
-// import { NGradientText } from 'naive-ui'
+import { detectZoom } from './utils/ZoomUtil';
+import { NDivider } from 'naive-ui';
 
 const store = useMainStore()
+
+const mainWidth = 2560;
+const mainHeight = 1440;
+const ratio = detectZoom();
+
+console.log(window.screen.width)
+
+const defaultZoom = window.screen.width / mainWidth * ratio;
+
+(document.body.style as any).zoom = Number(ratio) * defaultZoom;
 
 </script>
 
 <template>
-  <div id="main">
+  <div id="main" :style="{ '--header-height': store.headerHeight + 'px' }">
     <div id="header">
       <div style="flex: 1;"></div>
       <div id="menu"></div>
       <div style="flex: 1;"></div>
       <p id="title">{{ store.title }}</p>
     </div>
+    <!-- <n-divider /> -->
     <div id="body">
       <router-view />
     </div>
@@ -29,6 +42,10 @@ const store = useMainStore()
   flex-direction: column;
   overflow: hidden;
   background-color: gray;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }
 
 #header {
@@ -37,6 +54,8 @@ const store = useMainStore()
   padding: 10px;
   display: flex;
   overflow: hidden;
+  border-bottom: 1px solid black;
+  transition: 1s;
 }
 
 #title {
@@ -45,6 +64,7 @@ const store = useMainStore()
   line-height: var(--header-height);
   margin: 0 100px 0 30px;
   font-style: italic;
+  transition: 1s;
 }
 
 #menu {
