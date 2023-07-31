@@ -1,43 +1,39 @@
 <template>
     <div class="photo-main">
         <div class="photo-inner">
-            <div class="img-container" v-for="(item, index) in showList" :key="index" :class="isCenter(index) ? 'image-main':'image-sub'">
-                <img v-if="item.img" :src="item.img" @click="changeImage(item.index)"/>
+            <div class="img-container" v-for="(item, index) in showList" :key="index"
+                :class="isCenter(index) ? 'image-main' : 'image-sub'">
+                <img v-if="item.img" :src="item.img" @click="changeImage(item.index)" />
             </div>
         </div>
     </div>
-    
 </template>
 
 <script setup lang="ts">
-import {ref, Ref, onMounted, onUnmounted, computed, watch} from 'vue'
-import {useMainStore} from '@/store/index'
+import { ref, Ref, onMounted, onUnmounted, computed, watch } from 'vue'
+import { useRoute } from 'vue-router';
+import { useMainStore } from '@/store/index'
+import { apiClient } from '@/axios';
+import type { PortfolioPhoto } from '@/types/portfolio'
 
 const store = useMainStore()
+const route = useRoute()
 const imageSize = ref(5)
 
-const images = [
-    "/landscape.jpg",
-    "/portrait.jpg",
-    "/product1.jpg",
-    "/still-life.jpg",
-    "/landscape.jpg",
-    "/portrait.jpg",
-    "/product1.jpg",
-    "/still-life.jpg",
-    "/product1.jpg",
-    "/test.jpg",
-    "/portrait.jpg",
-    "/product1.jpg",
-    "/still-life.jpg",
-    "/landscape.jpg",
-    "/portrait.jpg",
-    "/product1.jpg",
-    "/still-life.jpg",
-    "/product1.jpg",
-]
+const { portfolioId } = route.params
 
+const portfolioPhotos = ref<PortfolioPhoto[]>([])
 
+const getPhotos = () => {
+    apiClient.get<PortfolioPhoto[]>(`/photos/${portfolioId}`).then(res => {
+        portfolioPhotos.value = res.data!
+        console.log(res.data);
+    })
+}
+
+onMounted(() => {
+    getPhotos()
+})
 
 const selectedIndex = ref(Math.ceil(imageSize.value / 2) - 1)
 
@@ -45,22 +41,21 @@ const changeImage = (index: number) => {
     selectedIndex.value = index
 }
 
-
 const showList = computed(() => {
     let index = 0
     const nullLength = Math.ceil(imageSize.value / 2) - 1
-    const startNullList = Array.from({length: nullLength}).fill({
+    const startNullList = Array.from({ length: nullLength }).fill({
         img: null,
         index: index++,
     })
 
-    const endNullList = Array.from({length: nullLength}).fill({
+    const endNullList = Array.from({ length: nullLength }).fill({
         img: null,
-        index: images.length + nullLength + index++,
+        index: portfolioPhotos.value.length + nullLength + index++,
     })
 
-    const imgList = images.map((img, index) => ({
-        img,
+    const imgList = portfolioPhotos.value.map((item, index) => ({
+        img: item.image,
         index: index + nullLength,
     }))
 
@@ -68,11 +63,9 @@ const showList = computed(() => {
 
     const start = selectedIndex.value - nullLength
     const end = start + imageSize.value
-    
-    const res = allList.slice(start, end)
 
-    console.log(allList)
-    
+    const res: any[] = allList.slice(start, end)
+
     return res
 })
 
@@ -90,7 +83,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-
 .photo-main {
     width: 100%;
     height: 100%;
@@ -103,7 +95,7 @@ onUnmounted(() => {
     justify-content: center;
     align-items: end;
     margin-bottom: 50px;
-    
+
 }
 
 .img-container {
@@ -150,7 +142,8 @@ img {
 .image-sub:hover {
     transform: scale(1.1);
 }
-.image-sub > img {
+
+.image-sub>img {
     border-radius: 15px;
     cursor: pointer;
 }

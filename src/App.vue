@@ -6,15 +6,15 @@ import { NDivider } from 'naive-ui';
 
 const store = useMainStore()
 
-const mainWidth = 2560;
-const mainHeight = 1440;
-const ratio = detectZoom();
+// const mainWidth = 2560;
+// const mainHeight = 1440;
+// const ratio = detectZoom();
 
-console.log(window.screen.width)
+// const defaultZoom = window.screen.width / mainWidth * ratio;
+// console.log(window.screen.width)
+// console.log('ratio', ratio, defaultZoom);
 
-const defaultZoom = window.screen.width / mainWidth * ratio;
-
-(document.body.style as any).zoom = Number(ratio) * defaultZoom;
+// (document.body.style as any).zoom = defaultZoom;
 
 </script>
 

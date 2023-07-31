@@ -15,7 +15,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Portfolio
   },
   {
-    path: '/photos',
+    path: '/photos/:portfolioId',
     name: 'Photos',
     component: Photos
   },

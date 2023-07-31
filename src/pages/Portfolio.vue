@@ -10,12 +10,14 @@
             </div>
         </div>
         <div class="content">
-            <div v-if="selected == 'all'" class="list">
-                <PortfolioCard v-for="p in allPortfolioList" v-bind="p" @click="cilickPortfolio(p)" />
-            </div>
+            <n-scrollbar v-if="selected == 'all'" style="max-height: 1000px;">
+                <div class="list">
+                    <PortfolioCard v-for="p in portfolioList" v-bind="p" @click="changeTitle(p)"/>
+                </div>
+            </n-scrollbar>
 
             <div v-else class="list">
-                <PortfolioTypeCard v-for="p in portfolioTypeList" :key="p.type" v-bind="p" @click="selectType(p)" />
+                <PortfolioTypeCard v-for="p in portfolioTagList" :key="p.name" v-bind="p" @click="selectType(p)" />
             </div>
         </div>
     </div>
@@ -28,96 +30,65 @@ import { useMainStore } from '@/store'
 import PortfolioTypeCard from '@/components/PortfolioTypeCard.vue';
 import PortfolioCard from '@/components/PortfolioCard.vue';
 import { useTitle } from '@vueuse/core'
-import type { Portfolio, PortfolioTypeItem } from '../types/portfolio'
+import type { Portfolio, PortfolioTag } from '../types/portfolio'
 import router from '@/router';
+import { NScrollbar } from 'naive-ui';
 
 type SelectType = "all" | "type";
 
 const store = useMainStore()
 const title = useTitle('作品集', { titleTemplate: '%s | 冯诗倪' })
 
+// 选中的是作品集还是全部
 const selected = ref<SelectType>("type");
-
-const portfolioType = ref<string | null>(null)
-
+// 选中的作品分类
+const portfolioTag = ref<string | null>(null)
 const portfolioList = ref<Portfolio[]>([]);
+const portfolioTagList = ref<PortfolioTag[]>([])
 
-const allPortfolioList = ref<Portfolio[]>([{
-    name: '风景',
-    type: 'landscape',
-    cover: './landscape.jpg',
-    description: '风景作品集的描述内容风景作品集的描述内容风景作品集的描述内容风景作品集的描述内容',
-    createTime: '2023-10-10',
-}, {
-    name: '静物',
-    type: 'landscape',
-    cover: './still-life.jpg',
-    description: '风景作品集的描述内容风景作品集的描述内容风景作品集的描述内容风景作品集的描述内容',
-    createTime: '2023-10-10',
-}, {
-    name: '人像',
-    type: 'landscape',
-    cover: './portrait.jpg',
-    description: '风景作品集的描述内容风景作品集的描述内容风景作品集的描述内容风景作品集的描述内容',
-    createTime: '2023-10-10',
-}, {
-    name: '产品',
-    type: 'landscape',
-    cover: './product1.jpg',
-    description: '风景作品集的描述内容风景作品集的描述内容风景作品集的描述内容风景作品集的描述内容',
-    createTime: '2023-10-10',
-}]);
+const changeTitle = (p: Portfolio) => {
+    title.value = p.name
+    store.title = p.name
+}
 
-const portfolioTypeList = reactive<PortfolioTypeItem[]>([
-    {
-        name: '风景',
-        type: 'landscape',
-        image: './landscape.jpg',
-    },
-    {
-        name: '静物',
-        type: 'still-life',
-        image: './still-life.jpg',
-    },
-    {
-        name: '人像',
-        type: 'portrait',
-        image: './portrait.jpg',
-    },
-    {
-        name: '产品',
-        type: 'product',
-        image: './product1.jpg',
-    }
-])
+onMounted(() => {
+    getPortfolioTags()
+    getPortfolioList()
+})
+
+const url = computed(() => {
+    if (selected.value == 'all')
+        return '/portfolio'
+    return `/portfolio?tag=${portfolioTag.value}`
+})
+
+
+// 获取作品集列表
+const getPortfolioList = () => {
+    apiClient.get<Portfolio[]>(url.value).then(res => {
+        portfolioList.value = res.data!
+        console.log(res.data);
+
+    })
+}
+
+// 获取作品集分类列表
+const getPortfolioTags = () => {
+    apiClient.get<PortfolioTag[]>('/tags').then(res => {
+        portfolioTagList.value = res.data!
+    })
+}
+
+watch(url, getPortfolioList)
+
 
 const selectAll = () => {
     selected.value = 'all'
-    portfolioType.value = null
+    portfolioTag.value = null
 }
 
-const selectType = (p: PortfolioTypeItem) => {
-    portfolioType.value = p.type
-}
-
-const url = computed(() => {
-    return `/api/portfolio?type=${portfolioType.value}`
-})
-
-watch(url, () => {
-    // apiClient.get(url.value).then((res: any) => {
-    //     console.log(res.data)
-    //     portfolioList.value = res.data.data as Portfolio[]
-    // })
-})
-
-onMounted(() => {
-    store.title = '作品集'
-})
-
-const cilickPortfolio = (p: Portfolio) => {
-    console.log(p)
-    router.push(`/photos`)
+const selectType = (p: PortfolioTag) => {
+    portfolioTag.value = p.name
 }
 
 </script>
@@ -169,6 +140,8 @@ const cilickPortfolio = (p: Portfolio) => {
 }
 
 .list {
+    max-height: 1040px;
+    flex: 1;
     display: flex;
     flex-wrap: wrap;
     padding: 20px;

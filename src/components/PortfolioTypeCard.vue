@@ -13,15 +13,15 @@
 <script setup lang="ts">
 
 import { ref, reactive, watch, computed } from 'vue';
-import type { PortfolioTypeItem } from '@/types/portfolio'
+import type { PortfolioTag } from '@/types/portfolio'
 
-const portfolioType = defineProps<PortfolioTypeItem>()
+const portfolioType = defineProps<PortfolioTag>()
 const showLabel = ref(false)
 
 const imgStyle = reactive({
     width: '550px',
     height: '750px',
-    backgroundImage: `url(${portfolioType.image})`,
+    backgroundImage: `url(${portfolioType.cover})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     borderRadius: '30px',

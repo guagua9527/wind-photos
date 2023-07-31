@@ -1,15 +1,27 @@
-export type PortfolioType = "landscape" | "portrait" | "product" | "still-life";
+
 
 export type Portfolio = {
+    id: number;
     name: string;
-    type: PortfolioType;
+    tag: string[];
     description: string;
-    cover: string;
-    createTime: string
+    coverImage: string;
+    createTime: string;
+    updateTime: string;
 }
 
-export type PortfolioTypeItem = {
+export type PortfolioTag = {
     name: string;
-    type: PortfolioType,
+    cover: string;
+    useCount: number;
+}
+
+export type PortfolioPhoto = {
+    id: number;
+    portfolioId: number;
+    name: string;
+    cameraParam: string;
+    description: string;
+    createTime: string;
     image: string;
 }

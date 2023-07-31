@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import type { Response } from '@/types/common'
 
 interface ApiResponse<T> {
     success: boolean
@@ -39,17 +40,17 @@ class ApiClient {
         }
     }
 
-    public async get<T>(url: string): Promise<AxiosResponse<T>> {
+    public async get<T>(url: string): Promise<Response<T>> {
         const response = await this.axiosInstance.get<T>(url)
-        return response
+        return response.data as Response<T>
     }
 
-    public async post<T>(url: string, data?: any): Promise<AxiosResponse<T>> {
+    public async post<T>(url: string, data?: any): Promise<Response<T>> {
         const response = await this.axiosInstance.post<T>(url, data)
-        return response
+        return response.data as Response<T>
     }
 
     // 添加其他 HTTP 方法的实现
 }
 
-export const apiClient = new ApiClient('http://localhost:3000')
+export const apiClient = new ApiClient('http://localhost:8080/api/photos/')
