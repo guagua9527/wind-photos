@@ -2,17 +2,17 @@
 <template>
     <div class="portfolio">
         <div class="header-bar">
-            <div class="bar-item" :class="selected == 'type' ? 'selected' : ''" @click="selected = 'type'">
-                作品分类
-            </div>
             <div class="bar-item" :class="selected == 'all' ? 'selected' : ''" @click="selectAll">
                 全部作品
+            </div>
+            <div class="bar-item" :class="selected == 'type' ? 'selected' : ''" @click="selected = 'type'">
+                作品分类
             </div>
         </div>
         <div class="content">
             <n-scrollbar v-if="selected == 'all'" style="max-height: 1000px;">
                 <div class="list">
-                    <PortfolioCard v-for="p in portfolioList" v-bind="p" @click="changeTitle(p)"/>
+                    <PortfolioCard v-for="p in portfolioList" v-bind="p" @click="changeTitle(p)" />
                 </div>
             </n-scrollbar>
 
@@ -40,7 +40,7 @@ const store = useMainStore()
 const title = useTitle('作品集', { titleTemplate: '%s | 冯诗倪' })
 
 // 选中的是作品集还是全部
-const selected = ref<SelectType>("type");
+const selected = ref<SelectType>("all");
 // 选中的作品分类
 const portfolioTag = ref<string | null>(null)
 const portfolioList = ref<Portfolio[]>([]);
