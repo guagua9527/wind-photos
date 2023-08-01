@@ -26,7 +26,6 @@ const store = useMainStore()
       <div style="flex: 1;"></div>
       <p id="title">{{ store.title }}</p>
     </div>
-    <!-- <n-divider /> -->
     <div id="body">
       <router-view />
     </div>
